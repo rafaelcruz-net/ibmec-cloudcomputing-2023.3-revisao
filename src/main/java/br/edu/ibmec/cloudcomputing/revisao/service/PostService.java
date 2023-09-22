@@ -27,6 +27,10 @@ public class PostService {
         return this.postRepository.findAll();
     }
 
+    public void saveOrUpdate(Post item) {
+        this.postRepository.save(item);
+    }
+
     public Post update(long id, Post newData) throws Exception {
         Optional<Post> opPost = this.postRepository.findById(id);
 

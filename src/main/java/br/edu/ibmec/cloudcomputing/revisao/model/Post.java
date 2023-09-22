@@ -86,4 +86,9 @@ public class Post {
         this.dtPublish = dtPublish;
     }
 
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
+
 }
