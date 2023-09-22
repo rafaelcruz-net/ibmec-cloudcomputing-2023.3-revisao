@@ -53,9 +53,9 @@ public class CommentService {
         }
 
         Post post = opPost.get();
-        post.addComment(item);
-        this.postService.saveOrUpdate(post);
-        
+        item.setPost(post);
+        this.repository.save(item);
+       
         return item;
     }
 

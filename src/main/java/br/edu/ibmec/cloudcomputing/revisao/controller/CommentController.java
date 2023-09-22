@@ -17,26 +17,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ibmec.cloudcomputing.revisao.model.Comment;
+import br.edu.ibmec.cloudcomputing.revisao.model.Post;
 import br.edu.ibmec.cloudcomputing.revisao.service.CommentService;
+import br.edu.ibmec.cloudcomputing.revisao.service.PostService;
 
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/post/{idPost}/comment")
 class resourceNameController {
 
     @Autowired
     CommentService commentService;
 
+    @Autowired PostService postService;
+
     @GetMapping
-    public ResponseEntity<List<Comment>> getAll() {
+    public ResponseEntity<List<Comment>> getAll(@PathVariable("idPost") long idPost) {
         try {
-            List<Comment> items = new ArrayList<Comment>();
+            Optional<Post> opPost = this.postService.getById(idPost);
 
-            commentService.findAll().forEach(items::add);
+            if (opPost.isPresent() == false) {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);    
+            }
 
-            if (items.isEmpty())
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(opPost.get().getComments(), HttpStatus.OK);
 
-            return new ResponseEntity<>(items, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -53,7 +57,7 @@ class resourceNameController {
         }
     }
 
-    @PostMapping("{idPost}")
+    @PostMapping
     public ResponseEntity<Comment> create(@PathVariable("idPost") long idPost, @RequestBody Comment item) {
         try {
             Comment savedItem = commentService.save(idPost, item);
