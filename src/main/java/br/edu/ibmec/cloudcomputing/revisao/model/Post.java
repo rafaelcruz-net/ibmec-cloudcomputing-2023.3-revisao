@@ -34,6 +34,9 @@ public class Post {
     @Column(nullable = false)
     private String author;
 
+    @Column(nullable = true)
+    private String urlImage;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private List<Comment> comments;
@@ -86,9 +89,16 @@ public class Post {
         this.dtPublish = dtPublish;
     }
 
-
     public void addComment(Comment comment) {
         this.comments.add(comment);
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
     }
 
 }

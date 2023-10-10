@@ -1,4 +1,5 @@
 package br.edu.ibmec.cloudcomputing.revisao.controller;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.edu.ibmec.cloudcomputing.revisao.model.Post;
 import br.edu.ibmec.cloudcomputing.revisao.service.PostService;
@@ -76,6 +79,16 @@ class PostController {
         try {
             postService.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @PostMapping("{id}")
+    public ResponseEntity<String> uploadPostImage(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
+        try {
+            postService.uploadFileToPost(file, id);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
