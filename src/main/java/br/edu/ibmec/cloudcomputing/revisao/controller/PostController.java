@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.edu.ibmec.cloudcomputing.revisao.exception.PostException;
 import br.edu.ibmec.cloudcomputing.revisao.model.Post;
 import br.edu.ibmec.cloudcomputing.revisao.service.PostService;
 
@@ -56,41 +57,25 @@ class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> create(@RequestBody Post item) {
-        try {
-            Post savedItem = postService.create(item);
-            return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
-        }
+    public ResponseEntity<Post> create(@RequestBody Post item) throws PostException {
+        Post savedItem = postService.create(item);
+        return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Post> update(@PathVariable("id") long id, @RequestBody Post item) {
-        try {
-            return new ResponseEntity<>(postService.update(id, item), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-        }
+    public ResponseEntity<Post> update(@PathVariable("id") long id, @RequestBody Post item) throws PostException {
+        return new ResponseEntity<>(postService.update(id, item), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id) {
-        try {
-            postService.delete(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-        }
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id) throws PostException {
+        postService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("{id}")
-    public ResponseEntity<String> uploadPostImage(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
-        try {
-            postService.uploadFileToPost(file, id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-        }
+    public ResponseEntity<String> uploadPostImage(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) throws PostException, Exception {
+        postService.uploadFileToPost(file, id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

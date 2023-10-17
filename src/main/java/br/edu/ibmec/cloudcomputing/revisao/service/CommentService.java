@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+import br.edu.ibmec.cloudcomputing.revisao.exception.CommentException;
 import br.edu.ibmec.cloudcomputing.revisao.model.Comment;
 import br.edu.ibmec.cloudcomputing.revisao.model.Post;
 import br.edu.ibmec.cloudcomputing.revisao.repository.CommentRepository;
@@ -27,11 +29,11 @@ public class CommentService {
         return this.repository.findById(id);
     }
 
-    public Comment update(long id, Comment newData) throws Exception {
+    public Comment update(long id, Comment newData) throws CommentException {
         Optional<Comment> opComment = this.repository.findById(id);
 
         if (opComment.isPresent() == false) {
-            throw new Exception("Commentário não encontrado");
+            throw new CommentException("Não encontrei o comentário a ser atualizado");
         }
 
         Comment comment = opComment.get();
@@ -45,11 +47,11 @@ public class CommentService {
         return comment;
     }
     
-    public Comment save(long idPost, Comment item) throws Exception {
+    public Comment save(long idPost, Comment item) throws CommentException {
         Optional<Post> opPost = this.postService.getById(idPost);
 
         if (opPost.isPresent() == false) {
-            throw new Exception("Post não encontrado");
+            throw new CommentException("Post não encontrado");
         }
 
         Post post = opPost.get();
@@ -59,11 +61,11 @@ public class CommentService {
         return item;
     }
 
-    public void delete(long id) throws Exception {
+    public void delete(long id) throws CommentException {
         Optional<Comment> opPost = this.repository.findById(id);
 
         if (opPost.isPresent() == false) {
-            throw new Exception("Não encontrei o post a ser atualizado");
+            throw new CommentException("Não encontrei o comentário a ser excluído");
         }
 
         this.repository.delete(opPost.get());

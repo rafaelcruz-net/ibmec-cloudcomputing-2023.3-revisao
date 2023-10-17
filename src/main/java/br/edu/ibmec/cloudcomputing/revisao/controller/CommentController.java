@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.ibmec.cloudcomputing.revisao.exception.BusinessException;
+import br.edu.ibmec.cloudcomputing.revisao.exception.CommentException;
 import br.edu.ibmec.cloudcomputing.revisao.model.Comment;
 import br.edu.ibmec.cloudcomputing.revisao.model.Post;
 import br.edu.ibmec.cloudcomputing.revisao.service.CommentService;
@@ -58,31 +60,19 @@ class resourceNameController {
     }
 
     @PostMapping
-    public ResponseEntity<Comment> create(@PathVariable("idPost") long idPost, @RequestBody Comment item) {
-        try {
-            Comment savedItem = commentService.save(idPost, item);
-            return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
-        }
+    public ResponseEntity<Comment> create(@PathVariable("idPost") long idPost, @RequestBody Comment item) throws CommentException {
+        Comment savedItem = commentService.save(idPost, item);
+        return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Comment> update(@PathVariable("id") long id, @RequestBody Comment item) {
-        try {
-            return new ResponseEntity<>(commentService.update(id, item), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-        }
+    public ResponseEntity<Comment> update(@PathVariable("id") long id, @RequestBody Comment item) throws CommentException {
+        return new ResponseEntity<>(commentService.update(id, item), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id) {
-        try {
-            commentService.delete(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-        }
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id) throws CommentException {
+        commentService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
